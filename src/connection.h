@@ -11,6 +11,8 @@ extern "C" {
 #include "request_handler.h"
 #include "response.h"
 
+#define NONGIN_API 
+
 http_parser_settings settings;
 
 typedef struct connection {
@@ -36,23 +38,27 @@ typedef struct connection {
 } connection;
 
 //create a new connection, this is called for every connection
-connection *create_connection(void);
-
-/*
- * Read from the connection @conn
-*/
-int read_from(const connection *conn);
-
-/*
- * write to client connection @conn
-*/
-int write_to(const connection *conn);
+connection NONGIN_API *create_connection(void);
 
 /*
  * A new connection is instantiated, this happens for every new connection
 */
-int new_client(const uv_stream_t *server, connection *conn );
+int NONGIN_API new_client(const uv_stream_t *server, connection *conn);
 
+/*
+ * Read from the connection @conn
+*/
+int NONGIN_API read_from(const connection *conn);
+
+/*
+ * write to client connection @conn
+*/
+int NONGIN_API write_to(const connection *conn);
+
+/*
+ * close connection @c
+*/
+int NONGIN_API close_con(connection *c);
 
 
 ///should be moved to request
@@ -62,4 +68,4 @@ int on_url(http_parser *parser, const char *url, size_t length);
 #ifdef __cplusplus
 }
 #endif
-#endif
+#endif //__CONNECTION_H__

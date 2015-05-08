@@ -24,6 +24,24 @@ void alloc_cb(uv_handle_t *handle, size_t size, uv_buf_t *buf)
     assert(buf->base != NULL && "Memory allocation failed");
 }
 
+static void get_method(connection *conn)
+{
+    conn->reqst.requested_method = conn->parser.method;
+}
+
+static
+int handle_request(const request *rqst, response *rslt)
+{
+    switch(rqst->requested_method) {
+        case HTTP_GET:
+            rslt->status = 200;
+            rslt->msg_body = "{\"name\":\"Faizan\"}";
+        default:
+            break;
+    }
+    return 0;
+}
+
 //Callback for testing
 void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
 {
@@ -42,11 +60,30 @@ void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
                      &conn->parser, &settings, dcrypted->base, nread
                  );
 
-    //write callback is nullified as writer will be free on connection close
+    if ( cnt < nread ) {
+        //there are some unparsed data like JSON
+        //need to handled manually
+    }
+
+    //request is ready for downstream processing
+    get_method(conn);
+
+    handle_request( &conn->reqst, &conn->reply);
+
+    //write callback is nullified as writer will be
+    //free on connection close
+    
+    char big_blob[20*1040] = {0};
+    if( conn->reply.status == 200) {
+        strcpy(big_blob, "HTTP/1.1 200 OK\r\n Content-Type: text/plain\r\n" \
+                "Content-Length: 12\r\n \r\n {\"name\": \"faizan\"}\n" );
+        dcrypted->base = big_blob;
+        dcrypted->len = sizeof(big_blob);
+    }
     uv_tls_write(&conn->writer, clnt, dcrypted, NULL);
 
-    free(dcrypted->base);
-    dcrypted->base = NULL;
+    //free(dcrypted->base);
+    //dcrypted->base = NULL;
 }
 
 int setup_server(http_server *svc, char *ip_addr, int port)

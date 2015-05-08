@@ -15,10 +15,14 @@ void handle_connection(uv_stream_t *server, int status)
     connection *conn =  malloc(sizeof(*conn));
     int r = new_client(server, conn);
     if( !r ) {
-        uv_tls_read(&conn->handle, alloc_cb , on_read);
+        //this part should be handled more accurately using read_from 
+        uv_tls_read(&conn->handle, alloc_cb, on_read);
+    }
+    else { //connection could not be estbalished
+        free(conn);
+        conn = 0;
     }
 }
-
 
 int main()
 {

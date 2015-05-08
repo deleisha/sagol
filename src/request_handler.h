@@ -11,6 +11,8 @@ extern "C" {
 typedef struct {
     //handle and incoming request and filled in the response in @reply
     int (*handle_request)( const request *req, response *reply);
+
+    //get the root of trie based router
 } request_handler;
 
 #ifdef __cplusplus

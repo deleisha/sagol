@@ -19,7 +19,7 @@ int on_url(http_parser *parser, const char *url, size_t length)
     assert( result == 0);
 
     //extract the request path from url
-    if ( u.field_set & (1 << UF_PATH ) ) {
+    if ( u.field_set & (1 << UF_PATH) ) {
         strncpy( conn->reqst.resource_path, url + u.field_data[UF_PATH].off,
                 u.field_data[UF_PATH].len);
 
