@@ -1,18 +1,39 @@
 #include "http_server.h"
-extern void on_connected( uv_stream_t *t, int);
+#include "connection.h"
+
+
+extern void alloc_cb(uv_handle_t *handle, size_t size, uv_buf_t *buf);
+extern void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted);
+
+void handle_connection(uv_stream_t *server, int status)
+{
+    if( status ) {
+        return;
+    }
+
+    //memory being freed at on_close
+    connection *conn =  malloc(sizeof(*conn));
+    int r = new_client(server, conn);
+    if( !r ) {
+        uv_tls_read(&conn->handle, alloc_cb , on_read);
+    }
+}
+
+
 int main()
 {
+    //bring up tls machine, this need to be done before server setup
+    //if we are using tls
+    int ng = tls_engine_inhale( "server-cert.pem", "server-key.pem", 0);
+    assert(ng == 0);
+
     const int port = 8000;
     http_server svc;
-    setup_server( &svc, "0.0.0.0", port);
-
-
+    setup_server(&svc, "0.0.0.0", port);
 
     printf("Listening on %d\n", port);
-    run(&svc, on_connected);
-
+    run(&svc, handle_connection);
 
     tls_engine_stop();
-    
     return 0;
 }

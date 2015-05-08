@@ -10,7 +10,7 @@ extern "C" {
 
 typedef struct {
     //handle and incoming request and filled in the response in @reply
-    int handle_request( const request *req, response *reply);
+    int (*handle_request)( const request *req, response *reply);
 } request_handler;
 
 #ifdef __cplusplus

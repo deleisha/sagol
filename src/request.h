@@ -9,13 +9,13 @@ extern "C" {
 
 struct request {
     int requested_method;
-    char *resource_path;
+    char resource_path[4*1024];
     int http_v_major;
     int http_v_minor;
 
     //querry string if present, redfish allows only skip and top
     //other values should be rejected
-    char *query;
+    char query[128];
 
     //fragment, ignored in redfish
     char *fragment;
@@ -24,6 +24,8 @@ struct request {
     char *body;
     header rqst_hdr[32];
 };
+
+typedef struct request request;
 
 #ifdef __cplusplus
 }

@@ -14,6 +14,7 @@ struct NONGIN_API http_server {
     uv_loop_t *loop;
 
     //representation of server socket
+    //should this be a separate abstraction
     uv_tls_t server_socket;
 
     //port to listen
