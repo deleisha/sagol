@@ -52,3 +52,61 @@ int new_client(const uv_stream_t *server, connection *conn )
 
     return uv_tls_accept(s_srvr, &conn->handle);
 }
+
+
+static void on_close(uv_tls_t* h)
+{
+    free(h->data);
+    h->data = 0;
+}
+
+void alloc_cb(uv_handle_t *handle, size_t size, uv_buf_t *buf)
+{
+    buf->base = (char*)malloc(size);
+    memset(buf->base, 0, size);
+    buf->len = size;
+    assert(buf->base != NULL && "Memory allocation failed");
+}
+
+
+static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
+{
+    if( nread <= 0 ) {
+        if( nread == UV_EOF) {
+            uv_tls_close(clnt, on_close);
+        }
+        return;
+    }
+
+    connection *conn = clnt->data;
+    http_parser_init(&conn->parser, HTTP_REQUEST);
+    settings.on_url = on_url;
+
+    size_t cnt = http_parser_execute(
+                     &conn->parser, &settings, dcrypted->base, nread
+                 );
+
+    if ( cnt < nread ) {
+        //there are some unparsed data like JSON
+        //need to handled manually
+    }
+
+    //write callback is nullified as writer will be
+    //free on connection close
+    
+    uv_tls_write(&conn->writer, clnt, dcrypted, NULL);
+
+    free(dcrypted->base);
+    dcrypted->base = NULL;
+}
+
+
+
+int handle_req(connection *conn)
+{
+    int rv = uv_tls_read(&conn->handle, alloc_cb, on_read);
+    if ( rv ) {
+        return rv;
+    }
+    return 0;
+}

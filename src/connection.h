@@ -60,6 +60,8 @@ int NONGIN_API write_to(const connection *conn);
 */
 int NONGIN_API close_con(connection *c);
 
+int NONGIN_API handle_req(connection *c);
+
 
 ///should be moved to request
 int on_url(http_parser *parser, const char *url, size_t length);

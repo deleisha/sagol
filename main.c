@@ -5,7 +5,7 @@
 extern void alloc_cb(uv_handle_t *handle, size_t size, uv_buf_t *buf);
 extern void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted);
 
-void handle_connection(uv_stream_t *server, int status)
+void handle_connect(uv_stream_t *server, int status)
 {
     if( status ) {
         return;
@@ -15,8 +15,7 @@ void handle_connection(uv_stream_t *server, int status)
     connection *conn =  malloc(sizeof(*conn));
     int r = new_client(server, conn);
     if( !r ) {
-        //this part should be handled more accurately using read_from 
-        uv_tls_read(&conn->handle, alloc_cb, on_read);
+        handle_req( conn );
     }
     else { //connection could not be estbalished
         free(conn);
@@ -36,7 +35,7 @@ int main()
     setup_server(&svc, "0.0.0.0", port);
 
     printf("Listening on %d\n", port);
-    run(&svc, handle_connection);
+    run(&svc, handle_connect);
 
     tls_engine_stop();
     return 0;
