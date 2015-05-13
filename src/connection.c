@@ -90,23 +90,24 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
         //there are some unparsed data like JSON
         //need to handled manually
     }
+    uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
 
-    //write callback is nullified as writer will be
-    //free on connection close
     
-    uv_tls_write(&conn->writer, clnt, dcrypted, NULL);
-
     free(dcrypted->base);
     dcrypted->base = NULL;
 }
 
 
-
-int handle_req(connection *conn)
+int handle_req(connection *conn, req_callbk write_res)
 {
     int rv = uv_tls_read(&conn->handle, alloc_cb, on_read);
     if ( rv ) {
         return rv;
     }
+    
+    if(write_res) {
+        write_res(conn);
+    }
+
     return 0;
 }

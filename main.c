@@ -2,8 +2,20 @@
 #include "connection.h"
 
 
-extern void alloc_cb(uv_handle_t *handle, size_t size, uv_buf_t *buf);
-extern void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted);
+void write_res( connection *conn)
+{
+    /*
+    //write callback is nullified as writer will be
+    //free on connection close
+    char *str = "Hello World";
+    uv_buf_t *dcrypted  = malloc(sizeof(*str));
+    memcpy(dcrypted->base, str, sizeof(*str));
+    dcrypted->len = 12;
+
+    uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
+    */
+
+}
 
 void handle_connect(uv_stream_t *server, int status)
 {
@@ -15,7 +27,7 @@ void handle_connect(uv_stream_t *server, int status)
     connection *conn =  malloc(sizeof(*conn));
     int r = new_client(server, conn);
     if( !r ) {
-        handle_req( conn );
+        handle_req(conn, write_res );
     }
     else { //connection could not be estbalished
         free(conn);

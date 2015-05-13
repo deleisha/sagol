@@ -48,7 +48,7 @@ int NONGIN_API new_client(const uv_stream_t *server, connection *conn);
 /*
  * Read from the connection @conn
 */
-int NONGIN_API read_from(const connection *conn);
+int NONGIN_API read_from(connection *conn);
 
 /*
  * write to client connection @conn
@@ -60,7 +60,8 @@ int NONGIN_API write_to(const connection *conn);
 */
 int NONGIN_API close_con(connection *c);
 
-int NONGIN_API handle_req(connection *c);
+typedef void (*req_callbk)(const connection *conn);
+int NONGIN_API handle_req(connection *c, req_callbk write_resp);
 
 
 ///should be moved to request
