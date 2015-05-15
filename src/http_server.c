@@ -45,3 +45,12 @@ int run(http_server *svc, uv_connection_cb handle_connection)
     uv_run(svc->loop, UV_RUN_DEFAULT);
     return 0;
 }
+
+router *get_router(const http_server *svc)
+{
+    return svc->rtr;
+}
+void set_router(http_server *svc, router *r)
+{
+    svc->rtr = r;
+}

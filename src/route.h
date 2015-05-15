@@ -7,7 +7,6 @@ extern "C" {
 
 #include "queue.h"
 
-typedef struct route route;
 
 
 struct route {
@@ -21,10 +20,16 @@ struct route {
     char *lib_name;
     char *name_len;
 
+    //function pointer
+    void *fptr;
+
     //Schema version that this lib serves
     
     QUEUE node;
 };
+typedef struct route route;
+
+void add_route(QUEUE *q, route *rt);
 
 #ifdef __cplusplus 
 }

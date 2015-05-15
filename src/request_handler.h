@@ -7,12 +7,16 @@ extern "C" {
 
 #include "request.h"
 #include "response.h"
+#include "connection.h"
 
 typedef struct {
     //handle and incoming request and filled in the response in @reply
-    int (*handle_request)( const request *req, response *reply);
+    int (*handle_)( const request *req, response *reply);
 
-    //get the root of trie based router
+    //connection *conn;
+
+    //route being handled
+
 } request_handler;
 
 #ifdef __cplusplus
