@@ -36,15 +36,22 @@ int enroute( router *rtr, request *req)
     QUEUE *d_q = get_route(rtr);
     QUEUE *q = QUEUE_HEAD(d_q);
     assert( q != NULL);
+
     QUEUE_FOREACH(q, d_q) {
         //get the request from request @req
         route *tmp = QUEUE_DATA(q, route, node);
         if(tmp->path_len != req->rpath_len) {
             continue;
         }
-        if(!strncmp(tmp->path,req->resource_path, tmp->path_len))
-            ;
-            //bring up the handle
+        if(!strncmp(tmp->path,req->resource_path, tmp->path_len)) {
+            plgn_info *r = &tmp->info;
+            switch( r->lang ) {
+                case C:
+                case PYTHON:
+                default:
+                    assert(false);
+            }
+    }
     }
     return 0;
 }
