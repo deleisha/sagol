@@ -15,12 +15,15 @@ typedef struct router router;
 
 
 struct router {
-    QUEUE rq;
+    QUEUE route;
     bool is_inited;
 };
 
 typedef void (*callback)(const request *rqst, response *reply);
-void addroute(router *router, char *path, callback func);
+void addroute(router *router, char *path, int path_len, callback func);
+
+QUEUE *get_route(router *rtr);
+
 
 #ifdef __cplusplus 
 }

@@ -29,7 +29,7 @@ typedef struct connection {
     response reply;
 
     //Master blaster for carrying the operation of the server
-    request_handler rqst_hdlr;
+    request_handler *rqst_hdlr;
 
     //write request for writing back the response, it is here to
     //reduce multiple malloc

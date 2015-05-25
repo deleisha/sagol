@@ -89,9 +89,17 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
         //there are some unparsed data like JSON
         //need to handled manually
     }
+
+    conn->rqst_hdlr = get_handler(conn->req.resource_path);
+
+    if( !conn->rqst_hdlr) {
+        //close the connection
+        return;
+    }
+
     //uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
     
-    dispatch(request, reply);
+    serve_req(conn );
 
 
     
@@ -100,12 +108,7 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
 }
 
 
-int handle_req(connection *conn)
+request_handler *get_handler(const char *path)
 {
-    int rv = uv_tls_read(&conn->handle, alloc_cb, on_read);
-    if ( rv ) {
-        return rv;
-    }
-    
-    return 0;
+    return plgn_ctor(path);
 }

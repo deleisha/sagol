@@ -19,6 +19,18 @@ typedef struct {
 
 } request_handler;
 
+/*
+void handle_req()
+{
+    switch(http_req) {
+        case GET:
+            hdlr->get();
+        case POST:
+            hdlr->post();
+    }
+}
+*/
+
 #ifdef __cplusplus
 }
 #endif
