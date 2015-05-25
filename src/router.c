@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "router.h"
 #include "route.h"
 
@@ -24,4 +25,26 @@ void addroute(router *router_, char *path, int path_len, callback func)
 QUEUE *get_route(router *rtr)
 {
     return &(rtr->route);
+}
+
+int enroute( router *rtr, request *req)
+{
+    if( !( rtr && req)) {
+        return -1;
+    }
+
+    QUEUE *d_q = get_route(rtr);
+    QUEUE *q = QUEUE_HEAD(d_q);
+    assert( q != NULL);
+    QUEUE_FOREACH(q, d_q) {
+        //get the request from request @req
+        route *tmp = QUEUE_DATA(q, route, node);
+        if(tmp->path_len != req->rpath_len) {
+            continue;
+        }
+        if(!strncmp(tmp->path,req->resource_path, tmp->path_len))
+            ;
+            //bring up the handle
+    }
+    return 0;
 }

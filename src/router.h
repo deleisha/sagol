@@ -24,6 +24,8 @@ void addroute(router *router, char *path, int path_len, callback func);
 
 QUEUE *get_route(router *rtr);
 
+int enroute(router *rtr, request *req);
+
 
 #ifdef __cplusplus 
 }
