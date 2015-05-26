@@ -51,6 +51,7 @@ int main()
     addroute(rtr, "/", 1, write_res);
 
     printf("Listening on %d\n", port);
+    svc.server_socket.data = &svc;
     run(&svc, handle_connect);
 
     tls_engine_stop();

@@ -22,7 +22,6 @@ struct NONGIN_API http_server {
     int port;
 
     router rtr;
-
 };
 
 typedef struct http_server http_server;

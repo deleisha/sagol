@@ -7,6 +7,7 @@ extern "C" {
 
 #include "uv_tls.h"
 #include "http_parser.h"
+#include "http_server.h"
 #include "request.h"
 #include "request_handler.h"
 #include "response.h"
@@ -34,6 +35,9 @@ typedef struct connection {
     //write request for writing back the response, it is here to
     //reduce multiple malloc
     uv_write_t writer;
+
+    //hook to the server where this connection is running
+    http_server *svc;
 
 } connection;
 

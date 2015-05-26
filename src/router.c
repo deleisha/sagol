@@ -27,18 +27,13 @@ void addroute(router *self, char *path, int path_len, callback func)
     add_route(&self->route, rt);
 }
 
-static QUEUE *get_head(router *self)
-{
-    return &(self->route);
-}
-
 request_handler* enroute( router *self, request *req)
 {
     if( !( self && req)) {
         return NULL;
     }
 
-    QUEUE *d_q = get_head(self);
+    QUEUE *d_q =  &(self->route);
     QUEUE *q = QUEUE_HEAD(d_q);
     assert( q != NULL);
 
@@ -47,6 +42,11 @@ request_handler* enroute( router *self, request *req)
         route *tmp = QUEUE_DATA(q, route, node);
         if(tmp->path_len != req->rpath_len) {
             continue;
+        }
+
+        if( tmp->func) { //Ok, callback found
+            request_handler *hdlr;
+            hdlr->handle_ = tmp->func;
         }
 
         if(!strncmp(tmp->path,req->resource_path, tmp->path_len)) {
