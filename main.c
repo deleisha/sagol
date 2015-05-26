@@ -2,7 +2,6 @@
 #include "connection.h"
 
 
-router config_svc;
 void write_res( const request *rqst, response *reply)
 {
     //write callback is nullified as writer will be
@@ -13,7 +12,6 @@ void write_res( const request *rqst, response *reply)
     dcrypted->len = 12;
 
     //uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
-
 }
 
 
@@ -28,7 +26,7 @@ void handle_connect(uv_stream_t *server, int status)
     int r = new_client(server, conn);
 
     if( !r ) {
-        handle_req(conn );
+        handle_req(conn);
     }
     else { //connection could not be estbalished
         free(conn);
@@ -40,16 +38,20 @@ int main()
 {
     //bring up tls machine, this need to be done before server setup
     //if we are using tls
-    int ng = tls_engine_inhale( "server-cert.pem", "server-key.pem", 0);
+    int ng = tls_engine_inhale("server-cert.pem", "server-key.pem", 0);
     assert(ng == 0);
 
     const int port = 8000;
     http_server svc;
     setup_server(&svc, "0.0.0.0", port);
 
-    addroute(&config_svc, "/", write_res);
+    router *rtr = get_router(&svc);
+    //third arg is the length of path, passing this explicitly to stop
+    //strlen calling
+    addroute(rtr, "/", 1, write_res);
 
     printf("Listening on %d\n", port);
+    svc.server_socket.data = &svc;
     run(&svc, handle_connect);
 
     tls_engine_stop();

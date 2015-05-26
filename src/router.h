@@ -8,19 +8,21 @@ extern "C" {
 #include <stdbool.h>
 #include "queue.h"
 #include "route.h"
-#include "request.h"
-#include "response.h"
+#include "request_handler.h"
 
 typedef struct router router;
 
 
 struct router {
-    QUEUE rq;
+    QUEUE route;
     bool is_inited;
 };
 
-typedef void (*callback)(const request *rqst, response *reply);
-void addroute(router *router, char *path, callback func);
+void addroute(router *router, char *path, int path_len, callback func);
+
+
+request_handler* enroute(router *rtr, request *req);
+
 
 #ifdef __cplusplus 
 }

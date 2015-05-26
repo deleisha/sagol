@@ -10,6 +10,9 @@ extern "C" {
 struct request {
     int requested_method;
     char resource_path[4*1024];
+    int rpath_len;
+
+
     int http_v_major;
     int http_v_minor;
 

@@ -7,6 +7,7 @@ extern "C" {
 
 #include "uv_tls.h"
 #include "http_parser.h"
+#include "http_server.h"
 #include "request.h"
 #include "request_handler.h"
 #include "response.h"
@@ -29,11 +30,14 @@ typedef struct connection {
     response reply;
 
     //Master blaster for carrying the operation of the server
-    request_handler rqst_hdlr;
+    request_handler *rqst_hdlr;
 
     //write request for writing back the response, it is here to
     //reduce multiple malloc
     uv_write_t writer;
+
+    //hook to the server where this connection is running
+    http_server *svc;
 
 } connection;
 
@@ -43,7 +47,7 @@ connection NONGIN_API *create_connection(void);
 /*
  * A new connection is instantiated, this happens for every new connection
 */
-int NONGIN_API new_client(const uv_tls_t *server, connection *conn);
+int NONGIN_API new_client(const uv_stream_t *server, connection *conn);
 
 /*
  * Read from the connection @conn

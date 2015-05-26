@@ -38,7 +38,7 @@ int on_url(http_parser *parser, const char *url, size_t length)
 }
 
 //connection need not be initiliased but space need to be allocated
-int new_client(const uv_tls_t *server, connection *conn )
+int new_client(const uv_stream_t *server, connection *conn )
 {
     uv_tls_t *s_srvr = CONTAINER_OF(server, uv_tls_t, socket_);
     conn->handle.data = conn;
@@ -85,13 +85,17 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
                      &conn->parser, &settings, dcrypted->base, nread
                  );
 
+    //there are some unparsed data like JSON
     if ( cnt < nread ) {
-        //there are some unparsed data like JSON
-        //need to handled manually
     }
-    //uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
+
+    if( !conn->rqst_hdlr) {
+        //return;
+    }
+
+    uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
     
-    dispatch(request, reply);
+   // serve_req(conn );
 
 
     
@@ -100,12 +104,18 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
 }
 
 
-int handle_req(connection *conn)
+/*
+request_handler *get_handler(const char *path)
 {
-    int rv = uv_tls_read(&conn->handle, alloc_cb, on_read);
-    if ( rv ) {
+    return plgn_ctor(path);
+}
+*/
+
+int handle_req(connection *self)
+{
+    int rv  = uv_tls_read(&self->handle, alloc_cb, on_read);
+    if( rv ) {
         return rv;
     }
-    
     return 0;
 }
