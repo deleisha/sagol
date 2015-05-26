@@ -7,7 +7,6 @@ extern "C" {
 
 #include "request.h"
 #include "response.h"
-#include "connection.h"
 
 typedef struct {
     //handle and incoming request and filled in the response in @reply

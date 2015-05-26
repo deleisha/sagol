@@ -43,7 +43,7 @@ connection NONGIN_API *create_connection(void);
 /*
  * A new connection is instantiated, this happens for every new connection
 */
-int NONGIN_API new_client(const uv_tls_t *server, connection *conn);
+int NONGIN_API new_client(const uv_stream_t *server, connection *conn);
 
 /*
  * Read from the connection @conn

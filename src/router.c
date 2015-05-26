@@ -3,37 +3,42 @@
 #include <assert.h>
 #include "router.h"
 #include "route.h"
+#include "request_handler.h"
 
-void addroute(router *router_, char *path, int path_len, callback func)
+void addroute(router *self, char *path, int path_len, callback func)
 {
-    if( !(router_->is_inited)) {
-        QUEUE_INIT(&router_->route);
-        router_->is_inited = true;
+    if( !(self->is_inited)) {
+        QUEUE_INIT(&self->route);
+        self->is_inited = true;
     }
 
     route *rt = malloc(sizeof(*rt));
     rt->path = path;
     rt->path_len = path_len;
+    rt->func = func;
     rt->info.vrsn.major = 1;
     rt->info.vrsn.minor = 0;
+    rt->info.vrsn.fix = 0;
+
     rt->info.createFunc = 0;
     rt->info.destroyFunc = 0;
-    rt->info.lang = (coded_lang) 0x1;
-    add_route(&router_->route, rt);
+
+    rt->info.lang = C;
+    add_route(&self->route, rt);
 }
 
-QUEUE *get_route(router *rtr)
+static QUEUE *get_head(router *self)
 {
-    return &(rtr->route);
+    return &(self->route);
 }
 
-int enroute( router *rtr, request *req)
+request_handler* enroute( router *self, request *req)
 {
-    if( !( rtr && req)) {
-        return -1;
+    if( !( self && req)) {
+        return NULL;
     }
 
-    QUEUE *d_q = get_route(rtr);
+    QUEUE *d_q = get_head(self);
     QUEUE *q = QUEUE_HEAD(d_q);
     assert( q != NULL);
 
@@ -43,6 +48,7 @@ int enroute( router *rtr, request *req)
         if(tmp->path_len != req->rpath_len) {
             continue;
         }
+
         if(!strncmp(tmp->path,req->resource_path, tmp->path_len)) {
             plgn_info *r = &tmp->info;
             switch( r->lang ) {
@@ -51,7 +57,7 @@ int enroute( router *rtr, request *req)
                 default:
                     assert(false);
             }
-    }
+        }
     }
     return 0;
 }
