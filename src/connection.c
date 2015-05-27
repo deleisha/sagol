@@ -41,8 +41,17 @@ int on_url(http_parser *parser, const char *url, size_t length)
 int new_client(const uv_stream_t *server, connection *conn )
 {
     uv_tls_t *s_srvr = CONTAINER_OF(server, uv_tls_t, socket_);
+
+    //ok, let us find the http server instance
+    http_server *hsrvr = CONTAINER_OF(server->loop, http_server, loop);
+    assert( &hsrvr->server_socket == s_srvr);
+
     conn->handle.data = conn;
     conn->parser.data = conn;
+    conn->svc = hsrvr;
+    conn->rqst_hdlr = NULL;
+
+
 
     if( uv_tls_init(server->loop, &conn->handle) < 0 ) {
         //hate this till better error handling in libuv-tls
@@ -89,15 +98,14 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
     if ( cnt < nread ) {
     }
 
-    if( !conn->rqst_hdlr) {
-        //return;
+
+
+    enroute(get_router(conn->svc), &conn->reqst);
+    if( conn->rqst_hdlr) {
+        conn->rqst_hdlr->handle_(&conn->reqst, &conn->reply);
+
     }
-
     uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
-    
-   // serve_req(conn );
-
-
     
     free(dcrypted->base);
     dcrypted->base = NULL;

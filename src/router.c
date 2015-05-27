@@ -4,6 +4,7 @@
 #include "router.h"
 #include "route.h"
 #include "request_handler.h"
+#include "connection.h"
 
 void addroute(router *self, char *path, int path_len, callback func)
 {
@@ -33,6 +34,8 @@ request_handler* enroute( router *self, request *req)
         return NULL;
     }
 
+    connection *c = CONTAINER_OF(req, connection, reqst);
+
     QUEUE *d_q =  &(self->route);
     QUEUE *q = QUEUE_HEAD(d_q);
     assert( q != NULL);
@@ -45,11 +48,13 @@ request_handler* enroute( router *self, request *req)
         }
 
         if( tmp->func) { //Ok, callback found
-            request_handler *hdlr;
+            request_handler *hdlr = malloc(sizeof(*hdlr));
             hdlr->handle_ = tmp->func;
+            c->rqst_hdlr = hdlr;
+            break;
         }
 
-        if(!strncmp(tmp->path,req->resource_path, tmp->path_len)) {
+        if(!strncmp(tmp->path, req->resource_path, tmp->path_len)) {
             plgn_info *r = &tmp->info;
             switch( r->lang ) {
                 case C:

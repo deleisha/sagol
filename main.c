@@ -4,14 +4,9 @@
 
 void write_res( const request *rqst, response *reply)
 {
-    //write callback is nullified as writer will be
     //free on connection close
     char *str = "Hello World";
-    uv_buf_t *dcrypted  = malloc(sizeof(*str));
-    memcpy(dcrypted->base, str, sizeof(*str));
-    dcrypted->len = 12;
-
-    //uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
+    //uv_buf_t dcrypted  = uv_buf_init(str, sizeof(*str));
 }
 
 
