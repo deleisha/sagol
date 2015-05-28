@@ -24,6 +24,7 @@ int on_url(http_parser *parser, const char *url, size_t length)
                 u.field_data[UF_PATH].len);
 
         conn->reqst.resource_path[u.field_data[UF_PATH].len] = '\0';
+        conn->reqst.rpath_len = u.field_data[UF_PATH].len;
         fprintf( stderr, "PATH = %s\n", conn->reqst.resource_path);
     }
 
@@ -43,15 +44,12 @@ int new_client(const uv_stream_t *server, connection *conn )
     uv_tls_t *s_srvr = CONTAINER_OF(server, uv_tls_t, socket_);
 
     //ok, let us find the http server instance
-    http_server *hsrvr = CONTAINER_OF(server->loop, http_server, loop);
-    assert( &hsrvr->server_socket == s_srvr);
+    http_server *hsrvr = CONTAINER_OF(s_srvr, http_server, server_socket);
 
     conn->handle.data = conn;
     conn->parser.data = conn;
     conn->svc = hsrvr;
     conn->rqst_hdlr = NULL;
-
-
 
     if( uv_tls_init(server->loop, &conn->handle) < 0 ) {
         //hate this till better error handling in libuv-tls

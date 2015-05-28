@@ -33,14 +33,15 @@ request_handler* enroute( router *self, request *req)
     if( !( self && req)) {
         return NULL;
     }
+    assert( self->is_inited);
 
     connection *c = CONTAINER_OF(req, connection, reqst);
+    assert(c != NULL);
 
-    QUEUE *d_q =  &(self->route);
-    QUEUE *q = QUEUE_HEAD(d_q);
+    QUEUE *q = QUEUE_HEAD(&self->route);
     assert( q != NULL);
 
-    QUEUE_FOREACH(q, d_q) {
+    QUEUE_FOREACH(q, &self->route) {
         //get the request from request @req
         route *tmp = QUEUE_DATA(q, route, node);
         if(tmp->path_len != req->rpath_len) {

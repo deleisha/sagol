@@ -15,11 +15,6 @@ typedef struct response {
     header hdr[32];
     int hdr_cnt;
     char *msg_body;
-
-    //functional API
-    void (*init)( struct response *self);
-
-
 } response;
 
 /*
@@ -30,9 +25,10 @@ typedef struct response {
   "hello world\n"
 */
 
-response init_fn(response *self);
 int set_status(response *self, int status);
 int set_cnt_type(response *self, const char *ctype);
+
+//uv_buf_t * to_buf(response *self);
 
 #ifdef __cplusplus
 }

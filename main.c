@@ -4,6 +4,7 @@
 
 void write_res( const request *rqst, response *reply)
 {
+    fprintf (stderr, "reaching my callback\n");
     //free on connection close
     char *str = "Hello World";
     //uv_buf_t dcrypted  = uv_buf_init(str, sizeof(*str));
@@ -46,7 +47,6 @@ int main()
     addroute(rtr, "/", 1, write_res);
 
     printf("Listening on %d\n", port);
-    svc.server_socket.data = &svc;
     run(&svc, handle_connect);
 
     tls_engine_stop();

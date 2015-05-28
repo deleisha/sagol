@@ -7,7 +7,7 @@ int main()
     router rtr;
     addroute(&rtr, "home", 4, 0);
 
-    QUEUE *hdr = QUEUE_HEAD(get_route(&rtr));
+    QUEUE *hdr = QUEUE_HEAD(&rtr.route);
 
     route *rt = QUEUE_DATA(hdr, route, node);
     printf("path = %s\n", rt->path);

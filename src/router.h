@@ -14,7 +14,7 @@ typedef struct router router;
 
 
 struct router {
-    QUEUE route;
+    QUEUE route; //head of the queue holding the route info
     bool is_inited;
 };
 
