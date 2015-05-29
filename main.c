@@ -52,7 +52,7 @@ int main()
     router *rtr = get_router(&svc);
     //third arg is the length of path, passing this explicitly to stop
     //strlen calling
-    addroute(rtr, "/", 1, write_res);
+    addroute(rtr, "/home", 5, write_res);
 
     printf("Listening on %d\n", port);
     run(&svc, handle_connect);
