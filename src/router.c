@@ -48,21 +48,15 @@ request_handler* enroute( router *self, request *req)
             continue;
         }
 
-        if( tmp->func) { //Ok, callback found
-            request_handler *hdlr = malloc(sizeof(*hdlr));
-            hdlr->handle_ = tmp->func;
-            c->rqst_hdlr = hdlr;
-            break;
-        }
-
+        
         if(!strncmp(tmp->path, req->resource_path, tmp->path_len)) {
-            plgn_info *r = &tmp->info;
-            switch( r->lang ) {
-                case C:
-                case PYTHON:
-                default:
-                    assert(false);
+            if( tmp->func) { //Ok, callback found
+                request_handler *hdlr = malloc(sizeof(*hdlr));
+                hdlr->handle_ = tmp->func;
+                c->rqst_hdlr = hdlr;
+                break;
             }
+
         }
     }
     return 0;

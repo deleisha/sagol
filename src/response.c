@@ -31,5 +31,6 @@ int set_hdr(response *self, const char *field, const char *val)
 
 uv_buf_t* to_buf(response *self)
 {
-
+    uv_buf_t *buf.base = malloc(65536);
+    buf->len = 65536;
 }

@@ -92,19 +92,24 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
                      &conn->parser, &settings, dcrypted->base, nread
                  );
 
+
     //there are some unparsed data like JSON
     if ( cnt < nread ) {
     }
-
-
 
     enroute(get_router(conn->svc), &conn->reqst);
     if( conn->rqst_hdlr) {
         conn->rqst_hdlr->handle_(&conn->reqst, &conn->reply);
 
     }
-    uv_tls_write(&conn->writer, &conn->handle, dcrypted, NULL);
+    uv_buf_t content;
+    content.base = malloc( conn->reply.msg_len + 1);
+    content.len =  conn->reply.msg_len + 1;
+    memcpy(content.base, conn->reply.msg_body, content.len);
+    uv_tls_write(&conn->writer, &conn->handle,&content , NULL);
     
+    free(conn->rqst_hdlr);
+    conn->rqst_hdlr = NULL;
     free(dcrypted->base);
     dcrypted->base = NULL;
 }

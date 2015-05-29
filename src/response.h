@@ -14,7 +14,9 @@ typedef struct response {
     //change this accordingly
     header hdr[32];
     int hdr_cnt;
+
     char *msg_body;
+    int msg_len;
 } response;
 
 /*
