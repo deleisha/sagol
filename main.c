@@ -4,8 +4,6 @@
 
 void write_res( const request *rqst, response *reply)
 {
-    fprintf (stderr, "reaching my callback\n");
-    //free on connection close
     //uv_buf_t dcrypted  = uv_buf_init(str, sizeof(*str));
     char *str =  "HTTP/1.1 200 OK\r\n" \
                   "Content-Type: text/plain\r\n" \
