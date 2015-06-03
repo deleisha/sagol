@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "connection.h"
+#include "utils/dyn_str.h"
 
 /// Caller need to free
 connection *create_connection(void)
@@ -74,7 +75,6 @@ void alloc_cb(uv_handle_t *handle, size_t size, uv_buf_t *buf)
     assert(buf->base != NULL && "Memory allocation failed");
 }
 
-
 static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
 {
     if( nread <= 0 ) {
@@ -99,13 +99,14 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
 
     enroute(get_router(conn->svc), &conn->reqst);
     if( conn->rqst_hdlr) {
+        init_res(&conn->reply);
         conn->rqst_hdlr->handle_(&conn->reqst, &conn->reply);
 
         uv_buf_t content;
         content.base = malloc( conn->reply.msg_len + 1);
         content.len =  conn->reply.msg_len + 1;
         memcpy(content.base, conn->reply.msg_body, content.len);
-        uv_tls_write(&conn->writer, &conn->handle,&content , NULL);
+        uv_tls_write(&conn->writer, &conn->handle, &content , NULL);
     }
     
     free(conn->rqst_hdlr);

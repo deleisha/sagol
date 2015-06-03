@@ -27,10 +27,13 @@ typedef struct response {
   "hello world\n"
 */
 
+void init_res(response *);
 int set_status(response *self, int status);
-int set_cnt_type(response *self, const char *ctype);
+void set_cnt_type(response *self, const char *ctype);
+void set_hdr(response *self, char *field, char *val);
 
-//uv_buf_t * to_buf(response *self);
+uv_buf_t* form_http_reply(response *self);
+
 
 #ifdef __cplusplus
 }

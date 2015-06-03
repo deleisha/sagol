@@ -1,6 +1,8 @@
-#include <response.h>
+#include <stdio.h>
+#include "uv_tls.h"
+#include "response.h"
 
-void init_fn( response *self)
+void init_res( response *self)
 {
     if(!self) {
         return;
@@ -10,27 +12,25 @@ void init_fn( response *self)
     self->msg_body = NULL;
 }
 
-
-
 int set_status(response *self, int status)
 {
     self->status = status;
+    return status;
 }
 
-int set_cnt_type(response *self, const char *ctype)
+void set_hdr(response *self, char *field, char *value)
 {
-    self->hdr[hdr_cnt].field = "content-type:";
-    self->hdr[hdr_cnt].value = "application/json\r\n";
+    self->hdr[self->hdr_cnt].field = field;
+    self->hdr[self->hdr_cnt].value = value;
     self->hdr_cnt++;
 }
 
-int set_hdr(response *self, const char *field, const char *val)
+uv_buf_t* form_http_reply(response *self)
 {
-    self->hdr_cnt++;
-}
+    if( !self) {
+        return NULL;
+    }
+    ngn_str_t *str = ngn_str_nw_len("HTTP/1.1", 8);
 
-uv_buf_t* to_buf(response *self)
-{
-    uv_buf_t *buf.base = malloc(65536);
-    buf->len = 65536;
+    return NULL;
 }

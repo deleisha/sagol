@@ -72,7 +72,7 @@ ngn_str_t* append(ngn_str_t *self, ngn_str_t *t)
     return self;
 }
 
-char* get_payload(ngn_str_t *self)
+char* get_cstr(ngn_str_t *self)
 {
     self->payload[self->free_at] = '\0';
     return self->payload;

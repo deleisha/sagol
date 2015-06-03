@@ -18,9 +18,6 @@
   TYPE payload[];               \
 }
 
-#define CONTAINER_OF(ptr, type, member)    \
-  (type *) ((char *)ptr - offsetof(type, member))
-
 typedef D_ARRAY(char) ngn_str_t;
 
 #define GET_INIT_MEM(NAME, SZ, TYPE)  malloc(sizeof(NAME) + SZ * sizeof(TYPE))
@@ -35,7 +32,7 @@ ngn_str_t* append_char_len(ngn_str_t *self, char *t, size_t len);
 ngn_str_t* append_char(ngn_str_t *self, char *t);
 void ngn_str_free(ngn_str_t *self);
 ngn_str_t* append(ngn_str_t *self, ngn_str_t *t);
-char* get_payload(ngn_str_t *self);
+char* get_cstr(ngn_str_t *self);
 size_t get_max_size(ngn_str_t *self);
 ngn_str_t *ngn_str_nw_len(char *t, size_t len);
 ngn_str_t* ngn_str_nw( char *t);

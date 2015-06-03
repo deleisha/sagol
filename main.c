@@ -4,16 +4,15 @@
 
 void write_res( const request *rqst, response *reply)
 {
-    //uv_buf_t dcrypted  = uv_buf_init(str, sizeof(*str));
-    char *str =  "HTTP/1.1 200 OK\r\n" \
-                  "Content-Type: text/plain\r\n" \
-                  "Content-Length: 12\r\n" \
-                  "\r\n" \
-                  "hello world\n";
-   reply->msg_len = strlen(str);
-   reply->msg_body = malloc(reply->msg_len + 1);
-   strncpy(reply->msg_body, str, reply->msg_len);
-   reply->msg_body[reply->msg_len] = '\0';
+    char *str = "hello world\n";
+
+   set_status(reply, 200);
+   set_hdr(reply, "Content-Type",  "text/plain");
+
+   reply->msg_len = sizeof(str);
+   //set_hdr(reply, "Content-Length",  "text/plain");
+
+   reply->msg_body = str;
 }
 
 
