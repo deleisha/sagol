@@ -6,7 +6,7 @@ for performance. This will be used for implementing redfish based RESTful server
 
 ## Design and Implementation
 
-Developing a webserver should be easy with sagol, the fast small Manipuri polo horse.
+Developing a webserver should be easy with sagol.
 ```c
 #include "http_server.h"
 #include "connection.h"
