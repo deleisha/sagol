@@ -1,6 +1,8 @@
 # sagol
-The libuv based TLS aware http web server framework. This will be used for implementing redfish based RESTful
-server for system management.
+
+Sagol, the Manipuri pony, despite its smaller size but intelligent are claimed to be best horse for polo.
+Like the small but fast horse, This is libuv based TLS aware http web server framework which is designed
+for performance. This will be used for implementing redfish based RESTful server for system management.
 
 ## Design and Implementation
 
@@ -42,3 +44,6 @@ int main() {
     return 0;
 }
 ```
+## Contributions
+
+The framework is very very much work in progress. YOU can make a difference by contributing
