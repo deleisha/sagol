@@ -28,7 +28,7 @@ typedef struct http_server http_server;
 
 int NONGIN_API setup_server(http_server *svc, char *ip_addr, int port);
 
-int NONGIN_API run(http_server *svc, uv_connection_cb on_connected);
+int NONGIN_API run(http_server *svc);
 
 router NONGIN_API *get_router(http_server *svc);
 

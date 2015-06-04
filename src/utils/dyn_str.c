@@ -26,9 +26,10 @@ ngn_str_t* append_char_len(ngn_str_t *self, char *t, size_t len)
     if( !t) return NULL;
 
     if( (self->capacity - self->free_at) <  len ) {
-        self = ngn_realloc( self, (self->capacity + len) * 2);
+	size_t sz = sizeof(ngn_str_t) + (self->capacity + len) * 2 + sizeof(char);
+        self = ngn_realloc( self, sz);
         assert( self != NULL);
-        self->capacity = (self->capacity + len) * 2;
+        self->capacity = sz;
     }
     memcpy(self->payload + self->free_at, t, len);
 

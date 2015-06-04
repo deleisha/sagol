@@ -6,6 +6,8 @@ extern "C" {
 #endif
 
 #include "header.h"
+#include "uv_tls.h"
+#include "utils/dyn_str.h"
 
 typedef struct response {
     //make this enum
@@ -27,12 +29,13 @@ typedef struct response {
   "hello world\n"
 */
 
+
 void init_res(response *);
 int set_status(response *self, int status);
 void set_cnt_type(response *self, const char *ctype);
 void set_hdr(response *self, char *field, char *val);
 
-uv_buf_t* form_http_reply(response *self);
+uv_buf_t form_http_reply(response *self);
 
 
 #ifdef __cplusplus

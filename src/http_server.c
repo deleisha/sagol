@@ -5,8 +5,8 @@
 void on_write(uv_write_t *req, int status)
 {
     if(!status && req) {
-        free(req);
-        req = 0;
+	free(req);
+	req = 0;
     }
 }
 
@@ -16,8 +16,8 @@ int setup_server(http_server *svc, char *ip_addr, int port)
     svc->loop = uv_default_loop();
 
     if(uv_tls_init(svc->loop, &svc->server_socket) < 0) {
-        fprintf( stderr, "TLS setup error\n");
-        return  -1;
+	fprintf( stderr, "TLS setup error\n");
+	return  -1;
     }
 
     struct sockaddr_in bind_addr;
@@ -26,19 +26,39 @@ int setup_server(http_server *svc, char *ip_addr, int port)
 
     r = uv_tcp_bind(&svc->server_socket.socket_,(struct sockaddr*)&bind_addr,0);
     if( r ) {
-        fprintf( stderr, "bind: %s\n", uv_strerror(r));
-        return  r;
+	fprintf( stderr, "bind: %s\n", uv_strerror(r));
+	return  r;
     }
 
     return 0;
 }
 
-int run(http_server *svc, uv_connection_cb handle_connection)
+
+void handle_connect(uv_stream_t *server, int status)
 {
-    int rv = uv_tls_listen(&svc->server_socket, 128, handle_connection);
+    if( status ) {
+	return;
+    }
+
+    //memory being freed at on_close
+    connection *conn =  malloc(sizeof(*conn));
+    int r = new_client(server, conn);
+
+    if( !r ) {
+	handle_req(conn);
+    }
+    else { //connection could not be estbalished
+	free(conn);
+	conn = 0;
+    }
+}
+
+int run(http_server *svc)
+{
+    int rv = uv_tls_listen(&svc->server_socket, 128, handle_connect);
     if( rv ) {
-        fprintf( stderr, "listen: %s\n", uv_strerror(rv));
-        return rv;
+	fprintf( stderr, "listen: %s\n", uv_strerror(rv));
+	return rv;
     }
 
     //always return 0 for UV_RUN_DEFAULT

@@ -9,31 +9,10 @@ void write_res( const request *rqst, response *reply)
    set_status(reply, 200);
    set_hdr(reply, "Content-Type",  "text/plain");
 
-   reply->msg_len = sizeof(str);
-   //set_hdr(reply, "Content-Length",  "text/plain");
-
+   reply->msg_len = strlen(str);
    reply->msg_body = str;
 }
 
-
-void handle_connect(uv_stream_t *server, int status)
-{
-    if( status ) {
-        return;
-    }
-
-    //memory being freed at on_close
-    connection *conn =  malloc(sizeof(*conn));
-    int r = new_client(server, conn);
-
-    if( !r ) {
-        handle_req(conn);
-    }
-    else { //connection could not be estbalished
-        free(conn);
-        conn = 0;
-    }
-}
 
 int main()
 {
@@ -52,7 +31,9 @@ int main()
     addroute(rtr, "/home", 5, write_res);
 
     printf("Listening on %d\n", port);
-    run(&svc, handle_connect);
+
+    //run forever
+    run(&svc);
 
     tls_engine_stop();
     return 0;

@@ -25,12 +25,56 @@ void set_hdr(response *self, char *field, char *value)
     self->hdr_cnt++;
 }
 
-uv_buf_t* form_http_reply(response *self)
+static char* get_status_str(int status, int *len)
 {
-    if( !self) {
-        return NULL;
+    switch(status) {
+	case 200:
+	{
+	    *len = 9;
+	    return " 200 OK\r\n"; // extra space prepended intentionally
+	}
+	default:
+	assert(0);
     }
+    return NULL;
+}
+
+static void set_content_len(response *slf, ngn_str_t *str)
+{
+    assert(slf != NULL && slf->msg_body != NULL);
+    assert( str != NULL);
+
+    str = append_char_len(str, "Content-Length:", 15);
+    char t[64*1024];
+    memset(t, 0, sizeof(t));
+    sprintf(t, "%d", slf->msg_len);
+    str = append_char_len(str, t, slf->msg_len);
+    str = append_char_len(str, "\r\n\r\n", 4);
+}
+
+uv_buf_t form_http_reply(response *self)
+{
+    assert(self != NULL);
     ngn_str_t *str = ngn_str_nw_len("HTTP/1.1", 8);
 
-    return NULL;
+    int ln = 0;
+    char *tmp = get_status_str(self->status, &ln);
+    append_char_len( str, tmp, ln);
+
+    for( int i = 0; i < self->hdr_cnt; ++i) {
+	str = append_char(str, self->hdr[i].field);
+	str = append_char_len(str, ":", 1);
+	str = append_char(str, self->hdr[i].value);
+	str = append_char_len(str, "\r\n", 2);
+    }
+
+    set_content_len(self, str);
+
+    str = append_char_len(str, self->msg_body, self->msg_len);
+    uv_buf_t buffer;
+    buffer.base = get_cstr(str);
+    buffer.len = ngn_strlen(str); 
+
+    
+    return buffer;
 }

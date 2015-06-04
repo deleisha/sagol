@@ -8,6 +8,7 @@ SOURCES = \
   src/route.c   \
   src/router.c  \
   src/response.c \
+  src/utils/dyn_str.c \
 
 server:
 	clang -Wall -g -o server $(SOURCES) -I libuv-tls -I./src -lcrypto -lpthread -lssl -I src/utils \
