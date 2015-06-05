@@ -2,13 +2,13 @@
 #define __HTTP_STATUS_H__
 
 #ifdef __cplusplus
-extern "c"{
+extern "C" {
 #endif
 
 typedef struct dummy {
     size_t sz;
     char *msg;
-}msg_info;
+}http_status_info;
 
 #define  CRLF    "\r\n"
 
@@ -23,14 +23,13 @@ typedef struct dummy {
 
 #define XX(code, len, wrd) len, wrd
 
-/*
-msg_info array[] = {
+/* http_status_info array[] = {
     {9, "200 Ok\r\n"},
     {14, "201 Created\r\n"},
     {}
-};
-*/
-static msg_info array[] = {
+}; */
+
+static http_status_info array[] = {
     HTTP_STATUS_MAP(XX)
 #undef XX
 };
@@ -45,17 +44,20 @@ static msg_info array[] = {
 
 #define XX(code, l, word) HTTP_STATUS_##code
 
-/*
-enum http_status {
+/* enum http_status {
     HTTP_STATUS_OK,
     HTTP_STATUS_CREATED
-};
-*/
+}; */
+
 enum http_status {
     HTTP_STATUS_MAP(XX)
 #undef XX
 };
+
+
+
 #ifdef __cplusplus
 }
 #endif
+
 #endif
