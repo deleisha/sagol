@@ -1,17 +1,18 @@
 #include "http_server.h"
-#include "connection.h"
+#include "http_status.h"
+#include "http_status.h"
 
 void write_res( const request *rqst, response *reply)
 {
    char *str = "hello world\n";
-   set_status(reply, 200);
+   //set_status(reply, 200);
+   set_status(reply, HTTP_STATUS_OK);
    set_hdr(reply, "Content-Type",  "text/plain");
    reply->msg_len = strlen(str);
    reply->msg_body = str;
 }
 
 int main() {
-
     const int port = 8000;
     http_server svc;
 

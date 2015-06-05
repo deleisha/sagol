@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "uv_tls.h"
 #include "response.h"
+#include "http_status.h"
 
 void init_res( response *self)
 {
@@ -25,19 +26,6 @@ void set_hdr(response *self, char *field, char *value)
     self->hdr_cnt++;
 }
 
-static char* get_status_str(int status, int *len)
-{
-    switch(status) {
-	case 200:
-	{
-	    *len = 9;
-	    return " 200 OK\r\n"; // extra space prepended intentionally
-	}
-	default:
-	assert(0);
-    }
-    return NULL;
-}
 
 static void set_content_len(response *slf, ngn_str_t *str)
 {
@@ -45,7 +33,7 @@ static void set_content_len(response *slf, ngn_str_t *str)
     assert( str != NULL);
 
     str = append_char_len(str, "Content-Length:", 15);
-    char t[64*1024];
+    char t[256];
     memset(t, 0, sizeof(t));
     sprintf(t, "%d", slf->msg_len);
     str = append_char_len(str, t, slf->msg_len);
@@ -57,8 +45,8 @@ uv_buf_t form_http_reply(response *self)
     assert(self != NULL);
     ngn_str_t *str = ngn_str_nw_len("HTTP/1.1", 8);
 
-    int ln = 0;
-    char *tmp = get_status_str(self->status, &ln);
+    size_t ln = 0;
+    char *tmp = GET_HTTP_STATUS_STR(self->status, ln);
     append_char_len( str, tmp, ln);
 
     for( int i = 0; i < self->hdr_cnt; ++i) {
