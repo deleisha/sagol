@@ -5,17 +5,14 @@
 extern "C" {
 #endif
 
+#define HEADER(type)                            \
+    struct header_tag  {                        \
+        type field;                             \
+	char *value;                            \
+    }
 
 
-struct header {
-    char *field;
-    char *value;
-};
-
-typedef struct header header;
-
-int set_header(char *field, char* value);
-void get_header(char *field);
+typedef HEADER(char*) header;
 
 #ifdef __cplusplus
 }

@@ -6,17 +6,25 @@
 #include "request_handler.h"
 #include "connection.h"
 
+
+void init_router(router *self)
+{
+    if(self->is_inited) {
+	return;
+    }
+    QUEUE_INIT(&self->route);
+    self->is_inited = true;
+}
+
 void addroute(router *self, char *path, int path_len, callback func)
 {
-    if( !(self->is_inited)) {
-        QUEUE_INIT(&self->route);
-        self->is_inited = true;
-    }
-
+    assert( self->is_inited);
     route *rt = malloc(sizeof(*rt));
+
     rt->path = path;
     rt->path_len = path_len;
     rt->func = func;
+
     rt->info.vrsn.major = 1;
     rt->info.vrsn.minor = 0;
     rt->info.vrsn.fix = 0;
@@ -28,10 +36,10 @@ void addroute(router *self, char *path, int path_len, callback func)
     add_route(&self->route, rt);
 }
 
-request_handler* enroute( router *self, request *req)
+void enroute( router *self, request *req)
 {
     if( !( self && req)) {
-        return NULL;
+        return;
     }
     assert( self->is_inited);
 
@@ -59,5 +67,4 @@ request_handler* enroute( router *self, request *req)
 
         }
     }
-    return 0;
 }

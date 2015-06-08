@@ -26,7 +26,7 @@ int on_url(http_parser *parser, const char *url, size_t length)
 
         conn->reqst.resource_path[u.field_data[UF_PATH].len] = '\0';
         conn->reqst.rpath_len = u.field_data[UF_PATH].len;
-        fprintf( stderr, "PATH = %s\n", conn->reqst.resource_path);
+        fprintf( stdout, "PATH = %s\n", conn->reqst.resource_path);
     }
 
     //extract the querry component from URL
@@ -98,7 +98,9 @@ static void on_read(uv_tls_t* clnt, int nread, uv_buf_t* dcrypted)
     }
 
     enroute(get_router(conn->svc), &conn->reqst);
+
     if( conn->rqst_hdlr) {
+
         init_res(&conn->reply);
         conn->rqst_hdlr->handle_(&conn->reqst, &conn->reply);
 

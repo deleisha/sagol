@@ -18,10 +18,12 @@ struct router {
     bool is_inited;
 };
 
+void init_router(router *self);
+
 void addroute(router *router, char *path, int path_len, callback func);
 
 
-request_handler* enroute(router *rtr, request *req);
+void enroute(router *rtr, request *req);
 
 
 #ifdef __cplusplus 

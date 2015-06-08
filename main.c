@@ -1,13 +1,10 @@
 #include "http_server.h"
-#include "http_status.h"
-#include "http_status.h"
 
 void write_res( const request *rqst, response *reply)
 {
-   char *str = "hello world\n";
-   //set_status(reply, 200);
+   char *str = "{ \"v1\": \"redfish/v1\" }";
    set_status(reply, HTTP_STATUS_OK);
-   set_hdr(reply, "Content-Type",  "text/plain");
+   set_hdr(reply, "Content-Type",  "application/json");
    reply->msg_len = strlen(str);
    reply->msg_body = str;
 }
@@ -24,7 +21,7 @@ int main() {
 
     //the length of path passed explicitly to stop strlen calling
     router *rtr = get_router(&svc);
-    addroute(rtr, "/home", 5, write_res);
+    addroute(rtr, "/redfish", 8, write_res);
 
     printf("Listening on %d\n", port);
 

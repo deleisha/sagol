@@ -7,11 +7,12 @@ extern "C" {
 
 #include "header.h"
 #include "uv_tls.h"
+#include "http_status.h"
 #include "utils/dyn_str.h"
 
 typedef struct response {
     //make this enum
-    int status;
+     enum http_status status;
 
     //change this accordingly
     header hdr[32];

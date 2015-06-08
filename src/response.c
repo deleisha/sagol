@@ -29,13 +29,14 @@ void set_hdr(response *self, char *field, char *value)
 
 static void set_content_len(response *slf, ngn_str_t *str)
 {
-    assert(slf != NULL && slf->msg_body != NULL);
-    assert( str != NULL);
+    assert(slf != NULL && slf->msg_body != NULL && str != NULL);
 
     str = append_char_len(str, "Content-Length:", 15);
+
     char t[256];
     memset(t, 0, sizeof(t));
     sprintf(t, "%d", slf->msg_len);
+
     str = append_char_len(str, t, slf->msg_len);
     str = append_char_len(str, "\r\n\r\n", 4);
 }
@@ -43,7 +44,9 @@ static void set_content_len(response *slf, ngn_str_t *str)
 uv_buf_t form_http_reply(response *self)
 {
     assert(self != NULL);
+
     ngn_str_t *str = ngn_str_nw_len("HTTP/1.1", 8);
+    assert(str != NULL);
 
     size_t ln = 0;
     char *tmp = GET_HTTP_STATUS_STR(self->status, ln);
@@ -59,9 +62,10 @@ uv_buf_t form_http_reply(response *self)
     set_content_len(self, str);
 
     str = append_char_len(str, self->msg_body, self->msg_len);
+    
     uv_buf_t buffer;
     buffer.base = get_cstr(str);
-    buffer.len = ngn_strlen(str); 
+    buffer.len = ngn_strlen(str);
 
     
     return buffer;

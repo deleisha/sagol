@@ -18,9 +18,9 @@ struct request {
 
     //querry string if present, redfish allows only skip and top
     //other values should be rejected
-    char query[128];
+    char query[64];
 
-    //fragment, ignored in redfish
+    //fragment, ignored in redfish, then why is it here
     char *fragment;
 
     //message body e.g. in POST

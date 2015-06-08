@@ -68,8 +68,12 @@ int run(http_server *svc)
 
 router *get_router(http_server *self)
 {
+    if( !self->rtr.is_inited) {
+	init_router(&self->rtr);
+    }
     return &self->rtr;
 }
+
 void set_router(http_server *self, router *r)
 {
     self->rtr = *r;
