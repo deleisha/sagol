@@ -25,7 +25,7 @@ struct request {
 
     //message body e.g. in POST
     char *body;
-    header rqst_hdr[32];
+    req_header rqst_hdr[32];
 };
 
 typedef struct request request;
