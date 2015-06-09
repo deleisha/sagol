@@ -10,6 +10,8 @@ extern "C" {
 #include "http_status.h"
 #include "utils/dyn_str.h"
 
+typedef HEADER(char*) header;
+
 typedef struct response {
     //make this enum
      enum http_status status;

@@ -6,6 +6,8 @@ extern "C" {
 #endif
 
 #include "header.h"
+#include "req_header.h"
+typedef HEADER(req_hdr_name) req_header;
 
 struct request {
     int requested_method;

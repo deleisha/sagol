@@ -5,14 +5,13 @@
 extern "C" {
 #endif
 
-#define HEADER(type)                            \
-    struct header_tag  {                        \
-        type field;                             \
-	char *value;                            \
-    }
+#define HEADER(type)                                                          \
+    struct {                                                      \
+        type field;                                                           \
+        char *value;                                                          \
+    }                                                                         \
 
 
-typedef HEADER(char*) header;
 
 #ifdef __cplusplus
 }
