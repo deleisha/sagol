@@ -22,8 +22,7 @@
 // make a enum of header name
 enum req_hdr_name {
 #define FN(HDR, REQD, HDR_STR)       REQ_HDR_##HDR
-    REDFISH_REQ_HDRS(FN),
-    HEADER_COUNT
+    REDFISH_REQ_HDRS(FN), REQ_HDR_COUNT
 #undef FN
 };
 

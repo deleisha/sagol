@@ -8,6 +8,7 @@ extern "C" {
 #include "header.h"
 #include "uv_tls.h"
 #include "http_status.h"
+#include "res_header.h"
 #include "utils/dyn_str.h"
 
 typedef HEADER(char*) header;
@@ -17,7 +18,7 @@ typedef struct response {
      enum http_status status;
 
     //change this accordingly
-    header hdr[32];
+    header hdr[RES_HEADER_COUNT];
     int hdr_cnt;
 
     char *msg_body;

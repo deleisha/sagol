@@ -16,9 +16,14 @@ int setup_server(http_server *svc, char *ip_addr, int port)
     svc->loop = uv_default_loop();
 
     if(uv_tls_init(svc->loop, &svc->server_socket) < 0) {
-	fprintf( stderr, "TLS setup error\n");
-	return  -1;
+        fprintf( stderr, "TLS setup error\n");
+        return  -1;
     }
+
+    if( !svc->rtr.is_inited) {
+        init_router (&svc->rtr);
+    }
+
 
     struct sockaddr_in bind_addr;
     int r = uv_ip4_addr(ip_addr, port, &bind_addr);
@@ -26,8 +31,8 @@ int setup_server(http_server *svc, char *ip_addr, int port)
 
     r = uv_tcp_bind(&svc->server_socket.socket_,(struct sockaddr*)&bind_addr,0);
     if( r ) {
-	fprintf( stderr, "bind: %s\n", uv_strerror(r));
-	return  r;
+        fprintf( stderr, "bind: %s\n", uv_strerror(r));
+        return  r;
     }
 
     return 0;
@@ -45,11 +50,11 @@ void handle_connect(uv_stream_t *server, int status)
     int r = new_client(server, conn);
 
     if( !r ) {
-	handle_req(conn);
+        handle_req(conn);
     }
     else { //connection could not be estbalished
-	free(conn);
-	conn = 0;
+        free(conn);
+        conn = 0;
     }
 }
 
@@ -57,8 +62,8 @@ int run(http_server *svc)
 {
     int rv = uv_tls_listen(&svc->server_socket, 128, handle_connect);
     if( rv ) {
-	fprintf( stderr, "listen: %s\n", uv_strerror(rv));
-	return rv;
+        fprintf( stderr, "listen: %s\n", uv_strerror(rv));
+        return rv;
     }
 
     //always return 0 for UV_RUN_DEFAULT
@@ -68,10 +73,7 @@ int run(http_server *svc)
 
 router *get_router(http_server *self)
 {
-    if( !self->rtr.is_inited) {
-	init_router(&self->rtr);
-    }
-    return &self->rtr;
+        return &self->rtr;
 }
 
 void set_router(http_server *self, router *r)

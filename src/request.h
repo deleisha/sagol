@@ -27,7 +27,7 @@ struct request {
 
     //message body e.g. in POST
     char *body;
-    req_header rqst_hdr[32];
+    req_header rqst_hdr[REQ_HDR_COUNT];
 };
 
 typedef struct request request;

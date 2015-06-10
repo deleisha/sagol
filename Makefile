@@ -13,7 +13,7 @@ SOURCES = \
 server:
 	cd libuv-tls/libuv && python gyp_uv.py
 	cd libuv-tls/libuv && make -C out
-	clang -Wall -g -o server $(SOURCES) -I libuv-tls -I./src -lcrypto -lpthread -lssl -I src/utils \
+	clang -Wall -g -o $@ $(SOURCES) -I libuv-tls -I./src -lcrypto -lpthread -lssl -I src/utils \
 			 -Llibuv-tls/libuv/out/Debug -luv
 
 

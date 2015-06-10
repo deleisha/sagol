@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #define HEADER(type)                                                          \
-    struct {                                                      \
+    struct {                                                                  \
         type field;                                                           \
         char *value;                                                          \
     }                                                                         \
